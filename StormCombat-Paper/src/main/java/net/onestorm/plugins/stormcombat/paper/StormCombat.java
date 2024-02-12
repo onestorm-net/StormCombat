@@ -13,6 +13,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
@@ -133,6 +134,19 @@ public class StormCombat extends JavaPlugin implements Listener {
         }
         // put new
         taskMap.put(uuid, future);
+    }
+
+    @SuppressWarnings("unused")
+    @EventHandler(ignoreCancelled = true)
+    public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
+        Player player = event.getPlayer();
+        UUID uuid = player.getUniqueId();
+
+        if (tagged.contains(uuid)) {
+            event.setCancelled(true);
+            player.sendMessage(Component.text("[!] You cannot use commands while combat tagged!", NamedTextColor.RED));
+        }
+
     }
 
     @SuppressWarnings("unused")
