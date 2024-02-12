@@ -6,7 +6,7 @@
   - Projectiles (arrows, eggs, snowball, tridents, firework, damaging potions)
   - Area effect clouds (atm only damaging lingering potions)
   - Primed TNT (when source is available)
-  - Ender Crystals (not yet perfect)
+  - Ender Crystals
 
 ##### Todo For Release:
 - [ ] Tag for all negative potions (make configurable, because Turtle potion is mixed) 
@@ -18,3 +18,4 @@
 - [ ] Add punishment (should probably ignore: server restarts & kicks)
 - [ ] Events and API
 - [ ] GitHub Actions
+- [ ] Ignore invulnerable players (creative, god mode)
