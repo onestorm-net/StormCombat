@@ -29,7 +29,8 @@ import java.util.concurrent.TimeUnit;
 
 public class StormCombat extends JavaPlugin implements Listener {
 
-    private static final long COMBAT_TAG_TIME = 15L;
+    private static final long COMBAT_TAG_TIME = 15L; // seconds
+    private static final long CRYSTAL_TICKS_TO_LIVE = 10L; // ticks
     private final Map<EnderCrystal, Player> crystalMap = new ConcurrentHashMap<>();
     private final Map<UUID, ScheduledFuture<?>> taskMap = new ConcurrentHashMap<>();
     private final Set<UUID> tagged = new HashSet<>();
@@ -74,23 +75,21 @@ public class StormCombat extends JavaPlugin implements Listener {
             defender = player;
         } else if (defenderEntity instanceof EnderCrystal defenderCrystal) {
             if (damager != null) {
-                crystalMap.put(defenderCrystal, damager);
+                putCrystal(defenderCrystal, damager);
             } else if (damagerEntity instanceof EnderCrystal damagerCrystal) {
-                Player player = crystalMap.remove(damagerCrystal);
+                Player player = crystalMap.get(damagerCrystal);
                 if (player == null) {
                     return;
                 }
-                crystalMap.put(defenderCrystal, player);
+                putCrystal(defenderCrystal, player);
             }
         }
 
         if (damagerEntity instanceof EnderCrystal damagerCrystal) {
-            Player player = crystalMap.remove(damagerCrystal);
-
+            Player player = crystalMap.get(damagerCrystal);
             if (player == null) {
                 return;
             }
-
             damager = player;
         }
 
@@ -104,14 +103,21 @@ public class StormCombat extends JavaPlugin implements Listener {
         combatTag(defender);
     }
 
+    private void putCrystal(EnderCrystal defender, Player damager) {
+        crystalMap.put(defender, damager);
+        BukkitScheduler scheduler = getServer().getScheduler();
+        scheduler.scheduleSyncDelayedTask(this, () -> crystalMap.remove(defender), CRYSTAL_TICKS_TO_LIVE);
+    }
+
     private void combatTag(Player player) {
         UUID uuid = player.getUniqueId();
         if (tagged.add(uuid)) {
             player.sendMessage(Component.text("You are now combat tagged", NamedTextColor.RED));
         }
 
+        BukkitScheduler scheduler = getServer().getScheduler();
         ScheduledFuture<?> future = executor.schedule(() -> {
-            getServer().getScheduler().runTask(this, () -> {
+            scheduler.runTask(this, () -> {
                 if (tagged.remove(uuid)) {
                     player.sendMessage(Component.text("You are no longer in combat", NamedTextColor.GREEN));
                 }

@@ -11,7 +11,7 @@
 ##### Todo For Release:
 - [ ] Tag for all negative potions (make configurable, because Turtle potion is mixed) 
 - [ ] Tag for exploding beds and (charged) respawn anchors
-- [ ] Optimize Ender Crystal algorithm
+- [x] Optimize Ender Crystal algorithm
 - [ ] Add a timer somewhere (boss bar with TAB? or action bar?)
 - [ ] Re-structure project (API, Core, Paper)
 - [ ] Add configurations (messages, actions)
