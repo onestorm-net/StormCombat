@@ -157,11 +157,7 @@ public class StormCombat extends JavaPlugin implements Listener {
 
         ScheduledFuture<?> oldFuture = taskMap.remove(uuid);
         if (oldFuture != null) {
-            getLogger().info("cancel start");
-            long start = System.currentTimeMillis();
             oldFuture.cancel(true);
-            long duration = System.currentTimeMillis() - start;
-            getLogger().info("cancel stop: " + duration + "ms");
         }
         if (tagged.remove(uuid)) {
             getServer().broadcast(Component.text(player.getName() + " left while combat tagged!", NamedTextColor.RED));
