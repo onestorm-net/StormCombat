@@ -15,7 +15,7 @@
 - [ ] Add a timer somewhere (boss bar with TAB? or action bar?)
 - [ ] Re-structure project (API, Core, Paper)
 - [ ] Add configurations (messages, actions)
-- [ ] Add punishment (should probably ignore: server restarts & kicks)
+- [x] Add punishment (should probably ignore: server restarts & kicks)
 - [ ] Events and API
 - [ ] GitHub Actions
 - [ ] Ignore invulnerable players (creative, god mode)

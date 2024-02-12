@@ -114,14 +114,14 @@ public class StormCombat extends JavaPlugin implements Listener {
     private void combatTag(Player player) {
         UUID uuid = player.getUniqueId();
         if (tagged.add(uuid)) {
-            player.sendMessage(Component.text("You are now combat tagged", NamedTextColor.RED));
+            player.sendMessage(Component.text("[!] You are now combat tagged, do not leave!", NamedTextColor.RED));
         }
 
         BukkitScheduler scheduler = getServer().getScheduler();
         ScheduledFuture<?> future = executor.schedule(() -> {
             scheduler.runTask(this, () -> {
                 if (tagged.remove(uuid)) {
-                    player.sendMessage(Component.text("You are no longer in combat", NamedTextColor.GREEN));
+                    player.sendMessage(Component.text("[!] You are no longer in combat, you are free to leave!", NamedTextColor.GREEN));
                 }
             });
         }, COMBAT_TAG_TIME, TimeUnit.SECONDS);
@@ -145,7 +145,7 @@ public class StormCombat extends JavaPlugin implements Listener {
             oldFuture.cancel(true);
         }
         if (tagged.remove(uuid)) {
-            player.sendMessage(Component.text("You are no longer in combat", NamedTextColor.GREEN));
+            player.sendMessage(Component.text("[!] You are no longer in combat, you are free to leave!", NamedTextColor.GREEN));
         }
     }
 
@@ -159,8 +159,18 @@ public class StormCombat extends JavaPlugin implements Listener {
         if (oldFuture != null) {
             oldFuture.cancel(true);
         }
-        if (tagged.remove(uuid)) {
-            getServer().broadcast(Component.text(player.getName() + " left while combat tagged!", NamedTextColor.RED));
+
+        PlayerQuitEvent.QuitReason reason = event.getReason();
+
+        if (tagged.remove(uuid) && reason != PlayerQuitEvent.QuitReason.KICKED) {
+            player.setHealth(0.0D);
+            for (UUID taggedUuid : tagged) {
+                Player taggedPlayer = getServer().getPlayer(taggedUuid);
+                if (taggedPlayer == null) {
+                    continue;
+                }
+                taggedPlayer.sendMessage(Component.text(player.getName() + " was killed for leaving while combat tagged!", NamedTextColor.RED));
+            }
         }
     }
 
