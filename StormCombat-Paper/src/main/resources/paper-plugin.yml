@@ -1,4 +1,4 @@
 name: "StormCombat"
-version: "${project.version}"
+version: "${project.parent.version}"
 main: "net.onestorm.plugins.stormcombat.paper.StormCombat"
 api-version: "1.20"
