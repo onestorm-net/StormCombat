@@ -15,6 +15,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitScheduler;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -97,7 +98,7 @@ public class StormCombat extends JavaPlugin implements Listener {
             return;
         }
 
-        getServer().broadcast(Component.text("[Debug] " + damager.getType() + " -> " + defender.getType()));
+        //getServer().broadcast(Component.text("[Debug] " + damager.getType() + " -> " + defender.getType(), NamedTextColor.DARK_GRAY));
 
         combatTag(damager);
         combatTag(defender);
@@ -107,8 +108,6 @@ public class StormCombat extends JavaPlugin implements Listener {
         UUID uuid = player.getUniqueId();
         if (tagged.add(uuid)) {
             player.sendMessage(Component.text("You are now combat tagged", NamedTextColor.RED));
-        } else {
-            player.sendMessage(Component.text("[Debug] already tagged", NamedTextColor.RED));
         }
 
         ScheduledFuture<?> future = executor.schedule(() -> {
@@ -156,7 +155,6 @@ public class StormCombat extends JavaPlugin implements Listener {
         }
         if (tagged.remove(uuid)) {
             getServer().broadcast(Component.text(player.getName() + " left while combat tagged!", NamedTextColor.RED));
-            getLogger().info(player.getName() + " left while combat tagged!");
         }
     }
 
