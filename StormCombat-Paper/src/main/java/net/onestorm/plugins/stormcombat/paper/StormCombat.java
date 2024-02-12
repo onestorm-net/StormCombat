@@ -52,7 +52,7 @@ public class StormCombat extends JavaPlugin implements Listener {
     }
 
     @SuppressWarnings("unused")
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
         Entity damagerEntity = event.getDamager();
         Entity defenderEntity = event.getEntity();
@@ -136,7 +136,7 @@ public class StormCombat extends JavaPlugin implements Listener {
     }
 
     @SuppressWarnings("unused")
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerDeath(PlayerDeathEvent event) {
         Player player = event.getPlayer();
         UUID uuid = player.getUniqueId();
