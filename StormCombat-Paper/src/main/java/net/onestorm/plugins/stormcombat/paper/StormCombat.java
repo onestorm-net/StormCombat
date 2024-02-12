@@ -27,6 +27,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+@SuppressWarnings("unused")
 public class StormCombat extends JavaPlugin implements Listener {
 
     private static final long COMBAT_TAG_TIME = 15L; // seconds
@@ -50,6 +51,7 @@ public class StormCombat extends JavaPlugin implements Listener {
         }
     }
 
+    @SuppressWarnings("unused")
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
         Entity damagerEntity = event.getDamager();
@@ -133,6 +135,7 @@ public class StormCombat extends JavaPlugin implements Listener {
         taskMap.put(uuid, future);
     }
 
+    @SuppressWarnings("unused")
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
         Player player = event.getPlayer();
@@ -146,6 +149,7 @@ public class StormCombat extends JavaPlugin implements Listener {
         }
     }
 
+    @SuppressWarnings("unused")
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
