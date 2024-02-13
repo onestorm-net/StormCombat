@@ -37,5 +37,5 @@ jobs:
         run: rsync -r --quiet target/mvn-repo/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/web/www/repo.onestorm.net/public/repository/maven-public/
       - name: Rsync deploy mvn paper repo
         run: rsync -r --quiet StormCombat-Paper/target/mvn-repo/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/web/www/repo.onestorm.net/public/repository/maven-public/
-      - name: Rsync deploy final artifact
-        run: rsync -r --quiet target/StormCombat-Paper-*.jar ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/web/www/repo.onestorm.net/public/downloads/
+      - name: Rsync deploy final artifact (Paper)
+        run: rsync -r --quiet StormCombat-Paper/target/StormCombat-Paper-*.jar ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/web/www/repo.onestorm.net/public/downloads/
