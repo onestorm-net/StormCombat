@@ -17,5 +17,5 @@
 - [ ] Add configurations (messages, actions)
 - [x] Add punishment (should probably ignore: server restarts & kicks)
 - [ ] Events and API
-- [ ] GitHub Actions
+- [x] GitHub Actions
 - [ ] Ignore invulnerable players (creative, god mode)

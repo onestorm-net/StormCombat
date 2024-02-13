@@ -1,0 +1,41 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build_and_test:
+    if: github.repository_owner == 'onestorm-net'
+    runs-on: ubuntu-latest
+    steps:
+      # Setup
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'adopt'
+          cache: 'maven'
+
+      # Build
+      - name: Build with Maven
+        run: mvn -U -B -e clean package deploy
+        # -U: --update-snapshots
+        # -B: Runs Maven in non-interactive (batch) mode
+        # -e: Displays Maven execution errors only
+
+      # Deploy
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          known_hosts: ${{ secrets.SSH_KNOWN_HOST }}
+      - name: Rsync deploy mvn parent repo
+        run: rsync -r --quiet target/mvn-repo/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/web/www/repo.onestorm.net/public/repository/maven-public/
+      - name: Rsync deploy mvn paper repo
+        run: rsync -r --quiet StormCombat-Paper/target/mvn-repo/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/web/www/repo.onestorm.net/public/repository/maven-public/
+      - name: Rsync deploy final artifact
+        run: rsync -r --quiet target/StormCombat-Paper-*.jar ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/web/www/repo.onestorm.net/public/downloads/
