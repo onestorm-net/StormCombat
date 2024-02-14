@@ -35,6 +35,10 @@ jobs:
           known_hosts: ${{ secrets.SSH_KNOWN_HOST }}
       - name: Rsync deploy mvn parent repo
         run: rsync -r --quiet target/mvn-repo/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/web/www/repo.onestorm.net/public/repository/maven-public/
+      - name: Rsync deploy mvn api repo
+        run: rsync -r --quiet StormCombat-API/target/mvn-repo/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/web/www/repo.onestorm.net/public/repository/maven-public/
+      - name: Rsync deploy mvn core repo
+        run: rsync -r --quiet StormCombat-Core/target/mvn-repo/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/web/www/repo.onestorm.net/public/repository/maven-public/
       - name: Rsync deploy mvn paper repo
         run: rsync -r --quiet StormCombat-Paper/target/mvn-repo/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/web/www/repo.onestorm.net/public/repository/maven-public/
       - name: Rsync deploy final artifact (Paper)

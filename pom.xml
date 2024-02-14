@@ -10,6 +10,8 @@
     <packaging>pom</packaging>
     <modules>
         <module>StormCombat-Paper</module>
+        <module>StormCombat-API</module>
+        <module>StormCombat-Core</module>
     </modules>
 
     <properties>
