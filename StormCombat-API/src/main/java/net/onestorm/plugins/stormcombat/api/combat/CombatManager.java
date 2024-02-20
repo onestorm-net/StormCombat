@@ -1,20 +1,18 @@
 package net.onestorm.plugins.stormcombat.api.combat;
 
-import net.onestorm.plugins.stormcombat.api.user.OnlineUser;
+import net.onestorm.plugins.stormcombat.api.user.OnlineCombatUser;
 
 import java.util.List;
 
 public interface CombatManager {
 
-    void setInCombat(OnlineUser user, boolean inCombat);
+    void setInCombat(OnlineCombatUser user, boolean inCombat);
 
-    void handleJoin(OnlineUser user);
+    void handleJoin(OnlineCombatUser user);
 
-    void handleQuit(OnlineUser user);
+    void handleQuit(OnlineCombatUser user);
 
-    void handleDeath(OnlineUser user);
-
-    List<OnlineUser> getInCombatUsers();
+    void handleDeath(OnlineCombatUser user);
 
     void reload();
 

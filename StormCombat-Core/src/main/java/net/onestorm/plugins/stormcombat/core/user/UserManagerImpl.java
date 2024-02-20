@@ -2,8 +2,8 @@ package net.onestorm.plugins.stormcombat.core.user;
 
 import net.onestorm.plugins.stormcombat.api.CombatPlugin;
 import net.onestorm.plugins.stormcombat.api.storage.UserData;
-import net.onestorm.plugins.stormcombat.api.user.OnlineUser;
-import net.onestorm.plugins.stormcombat.api.user.User;
+import net.onestorm.plugins.stormcombat.api.user.OnlineCombatUser;
+import net.onestorm.plugins.stormcombat.api.user.CombatUser;
 import net.onestorm.plugins.stormcombat.api.user.UserManager;
 import net.onestorm.plugins.stormcombat.core.storage.UserDataImpl;
 
@@ -18,8 +18,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class UserManagerImpl implements UserManager {
 
-    private final Map<UUID, OnlineUser> UuidToUserMap = new ConcurrentHashMap<>();
-    private final Map<String, OnlineUser> UsernameToUserMap = new ConcurrentHashMap<>();
+    private final Map<UUID, OnlineCombatUser> UuidToUserMap = new ConcurrentHashMap<>();
+    private final Map<String, OnlineCombatUser> UsernameToUserMap = new ConcurrentHashMap<>();
     private final CombatPlugin plugin;
 
     public UserManagerImpl(CombatPlugin plugin) {
@@ -27,29 +27,29 @@ public class UserManagerImpl implements UserManager {
     }
 
     @Override
-    public Optional<OnlineUser> getOnlineUser(UUID uuid) {
+    public Optional<OnlineCombatUser> getOnlineUser(UUID uuid) {
         return Optional.ofNullable(UuidToUserMap.get(uuid));
     }
 
     @Override
-    public Optional<OnlineUser> getOnlineUser(String username) {
+    public Optional<OnlineCombatUser> getOnlineUser(String username) {
         return Optional.ofNullable(UsernameToUserMap.get(username.toLowerCase(Locale.ENGLISH)));
     }
 
     @Override
-    public List<OnlineUser> getOnlineUsers() {
+    public List<OnlineCombatUser> getOnlineUsers() {
         return new ArrayList<>(UuidToUserMap.values());
     }
 
     @Override
-    public CompletableFuture<Optional<User>> getUser(UUID uuid) {
-        User onlineUser = UuidToUserMap.get(uuid);
+    public CompletableFuture<Optional<CombatUser>> getUser(UUID uuid) {
+        CombatUser onlineUser = UuidToUserMap.get(uuid);
 
         if (onlineUser != null) {
             return CompletableFuture.completedFuture(Optional.of(onlineUser));
         }
 
-        CompletableFuture<Optional<User>> futureUser = new CompletableFuture<>();
+        CompletableFuture<Optional<CombatUser>> futureUser = new CompletableFuture<>();
 
         plugin.getStorage().getUserData(uuid).thenAccept(optionalUserData -> {
             if (optionalUserData.isEmpty()) {
@@ -57,7 +57,7 @@ public class UserManagerImpl implements UserManager {
                 return;
             }
 
-            User user = new UserImpl(uuid);
+            CombatUser user = new UserImpl(uuid);
             user.setUserData(optionalUserData.get());
 
             futureUser.complete(Optional.of(user));
@@ -67,8 +67,8 @@ public class UserManagerImpl implements UserManager {
     }
 
     @Override
-    public CompletableFuture<Optional<User>> getUser(String username) {
-        OnlineUser onlineUser = UsernameToUserMap.get(username.toLowerCase(Locale.ENGLISH));
+    public CompletableFuture<Optional<CombatUser>> getUser(String username) {
+        OnlineCombatUser onlineUser = UsernameToUserMap.get(username.toLowerCase(Locale.ENGLISH));
 
         if (onlineUser != null) {
             return CompletableFuture.completedFuture(Optional.of(onlineUser));
@@ -78,7 +78,7 @@ public class UserManagerImpl implements UserManager {
     }
 
     @Override
-    public void handleJoin(OnlineUser user) {
+    public void handleJoin(OnlineCombatUser user) {
         UUID uuid = user.getUuid();
         String username = user.getUsername().toLowerCase(Locale.ENGLISH);
         UuidToUserMap.put(uuid, user);
@@ -87,17 +87,17 @@ public class UserManagerImpl implements UserManager {
         plugin.getStorage().getUserData(uuid).thenAccept(optionalUserData -> {
             if (optionalUserData.isPresent()) {
                 user.setUserData(optionalUserData.get());
-                return;
+            } else {
+                UserData data = new UserDataImpl(uuid, false);
+                user.setUserData(data);
+                plugin.getStorage().setUserData(uuid, data);
             }
-
-            UserData data = new UserDataImpl(uuid, false);
-            user.setUserData(data);
-            plugin.getStorage().setUserData(uuid, data);
+            plugin.getCombatManager().handleJoin(user);
         });
     }
 
     @Override
-    public void handleQuit(OnlineUser user) {
+    public void handleQuit(OnlineCombatUser user) {
         UUID uuid = user.getUuid();
         String username = user.getUsername().toLowerCase(Locale.ENGLISH);
         UserData userData = user.getUserData();
@@ -106,6 +106,8 @@ public class UserManagerImpl implements UserManager {
         if (UuidToUserMap.remove(uuid) == null || plugin.isDisabling() || userData == null || !userData.needsSaving()) {
             return; // if not in map, don't save
         }
+
+        plugin.getCombatManager().handleQuit(user);
 
         plugin.getStorage()
                 .setUserData(uuid, userData)

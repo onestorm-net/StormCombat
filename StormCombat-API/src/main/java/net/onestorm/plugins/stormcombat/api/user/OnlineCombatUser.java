@@ -1,6 +1,6 @@
 package net.onestorm.plugins.stormcombat.api.user;
 
-public interface OnlineUser extends User {
+public interface OnlineCombatUser extends CombatUser {
 
     String getUsername();
 

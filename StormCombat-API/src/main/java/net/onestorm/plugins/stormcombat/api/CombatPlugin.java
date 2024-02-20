@@ -1,5 +1,8 @@
 package net.onestorm.plugins.stormcombat.api;
 
+import net.onestorm.library.action.ActionManager;
+import net.onestorm.library.configuration.Configuration;
+import net.onestorm.library.username.UsernameManager;
 import net.onestorm.plugins.stormcombat.api.combat.CombatManager;
 import net.onestorm.plugins.stormcombat.api.storage.Storage;
 import net.onestorm.plugins.stormcombat.api.user.UserManager;
@@ -18,11 +21,12 @@ public interface CombatPlugin {
 
     boolean isDisabling();
 
-    // Configuration getConfiguration() StormLib
+    Configuration getConfiguration();
 
-    // ActionManager getActionManager() StormLib
+    ActionManager getActionManager();
 
-    // UsernameManager getUsernameManager() StormLib
+    UsernameManager getUsernameManager();
+
     void reload();
 
 }

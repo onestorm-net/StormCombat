@@ -7,19 +7,19 @@ import java.util.concurrent.CompletableFuture;
 
 public interface UserManager {
 
-    Optional<OnlineUser> getOnlineUser(UUID uuid);
+    Optional<OnlineCombatUser> getOnlineUser(UUID uuid);
 
-    Optional<OnlineUser> getOnlineUser(String username);
+    Optional<OnlineCombatUser> getOnlineUser(String username);
 
-    List<OnlineUser> getOnlineUsers();
+    List<OnlineCombatUser> getOnlineUsers();
 
-    CompletableFuture<Optional<User>> getUser(UUID uuid);
+    CompletableFuture<Optional<CombatUser>> getUser(UUID uuid);
 
-    CompletableFuture<Optional<User>> getUser(String username);
+    CompletableFuture<Optional<CombatUser>> getUser(String username);
 
-    void handleJoin(OnlineUser user);
+    void handleJoin(OnlineCombatUser user);
 
-    void handleQuit(OnlineUser user);
+    void handleQuit(OnlineCombatUser user);
 
     void close();
 
